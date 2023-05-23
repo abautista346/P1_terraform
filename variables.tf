@@ -26,3 +26,9 @@ variable "vps_val" {
     }
   ]
 }
+
+
+//to launch_template MODULE
+variable "launch_template_values" {
+    description =   "values to set configuration in Launch Template"
+}

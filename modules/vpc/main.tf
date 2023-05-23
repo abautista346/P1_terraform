@@ -49,6 +49,7 @@ resource "aws_subnet" "sn_private" {
   count       = var.count_private_subnet  
   vpc_id      = aws_vpc.abautista_vpc.id
   cidr_block  = cidrsubnet(var.vpc_cidr, 8, count.index + 1 + length(aws_subnet.sn_public))
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags        = merge(local.myTags, {Name = "${var.environment}_priv-sn_${count.index + 1}"}) 
 }
@@ -83,26 +84,39 @@ resource "aws_route_table_association" "rt_public_link" {
 
 }
 
+//Elastic IP to NAT GATEWAY
+
+resource "aws_eip" "my_elasticIP" {
+  vpc = true
+  tags = merge(local.myTags, {Name = "${var.environment}_EIP"})
+  depends_on                = [aws_internet_gateway.abautista_IG]
+}
+
+
 //NAT GATEWAY
-/*
+
 resource "aws_nat_gateway" "abautista_NAT" {
   
-  connectivity_type = "private"
-  subnet_id         = aws_subnet.sn_public[count.index].id
+  connectivity_type = "public"
+  allocation_id = aws_eip.my_elasticIP.id
+  subnet_id         = aws_subnet.sn_public[0].id
+  tags = merge(local.myTags, {Name = "${var.environment}_NAT"})
+
+  depends_on = [aws_internet_gateway.abautista_IG]
 }
-*/
+
 
 //PRIVATE ROUTE TABLE
 resource "aws_route_table" "rt_private" {
   
   vpc_id = aws_vpc.abautista_vpc.id
 
-/*
+
   route {
     cidr_block      = var.cidr_open
     nat_gateway_id  = aws_nat_gateway.abautista_NAT.id
   }
-*/
+
   tags = merge(local.myTags, {Name = "${var.environment}_priv-RT"})
 }
 
