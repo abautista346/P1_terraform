@@ -6,4 +6,9 @@ output "public_subnet" {
     description = "Returns PUBLIC SN ID"
 }
 
+output "id_sg_allow" {
+    value       =   aws_security_group.allow_traffic.id
+    description =   "ID of my Securuty Group to allow all"
+}
+
 

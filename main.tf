@@ -1,5 +1,14 @@
 // Here the modules will be invoked
 
+locals {
+  
+  myTags = {
+    Owner   =   "abautista"
+    Env     =   "p1"
+  }
+
+}
+
 module "vpc" {
     source                  =   "./modules/vpc"
     vpc_cidr                =   var.vpc_values["vpc_cidr"]
@@ -22,6 +31,15 @@ module "launch_template" {
     ebs_size        =   var.launch_template_values["ebs_size"] 
     bool_encript    =   var.launch_template_values["bool_encript"] 
     key_pair        =   var.launch_template_values["key_pair"]
+    arn_iam_profile =   module.role_definition.arn_iam_profile
+    sg_allow        =   module.vpc.id_sg_allow
+}
+
+module "role_definition" {
+    source                  =   "./modules/role_definition"
+
+    environment     =   var.vpc_values["environment"]
+    myTags          =   local.myTags
 }
 
 ### command to use variables file 

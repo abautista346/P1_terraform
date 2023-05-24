@@ -28,3 +28,11 @@ variable "bool_encript" {
 variable "key_pair" {
     description = "Key Pair name to use in the launch template"
 }
+
+variable "arn_iam_profile" {
+    description =   "arn value of the IAM Profile with access"
+}
+
+variable "sg_allow" {
+    description =   "ID of Security Group from VPC"
+}

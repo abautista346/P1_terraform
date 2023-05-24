@@ -25,17 +25,19 @@ resource "aws_launch_template" "launch_temp" {
       encrypted   = var.bool_encript
     }
   }
-/*
+
   iam_instance_profile {
-    arn = aws_iam_instance_profile.test_profile.arn
+    arn = var.arn_iam_profile
   }
-*/
+
   network_interfaces {
     associate_public_ip_address = false
     delete_on_termination       = true
     device_index                = 0
-    //security_groups             = [aws_security_group.allow_tls.id]
+    security_groups             = [var.sg_allow]
   }
 
   tags        = local.myTags 
 }
+
+
