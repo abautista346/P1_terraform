@@ -33,7 +33,6 @@ module "launch_template" {
     key_pair        =   var.launch_template_values["key_pair"]
     arn_iam_profile =   module.role_definition.arn_iam_profile
     sg_allow        =   module.vpc.id_sg_allow
-    
 }
 
 module "role_definition" {
