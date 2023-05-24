@@ -18,6 +18,10 @@ terraform {
 
 //configuration my AWS provider
 provider "aws" {
+<<<<<<< HEAD
     ///region  =   "us-east-1" //old region changed  because here exist a problem with the number of resources
+=======
+    //region  =   "us-east-1"
+>>>>>>> 4f841aa5040f5bcc5ec1e1a184f56bfa1f88143b
     region  = "us-west-2"
 }
