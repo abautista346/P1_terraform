@@ -37,6 +37,8 @@ resource "aws_launch_template" "launch_temp" {
     security_groups             = [var.sg_allow]
   }
 
+  user_data = filebase64("${path.module}/init.sh")
+
   tags        = local.myTags 
 }
 

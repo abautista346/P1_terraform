@@ -28,9 +28,10 @@ resource "aws_vpc" "abautista_vpc" {
 
 // PUBLIC SUBNET
 resource "aws_subnet" "sn_public" {
-  count       = var.count_public_subnet
-  vpc_id      = aws_vpc.abautista_vpc.id
-  cidr_block  = cidrsubnet(var.vpc_cidr,8,1)
+  count                   = var.count_public_subnet
+  vpc_id                  = aws_vpc.abautista_vpc.id
+  cidr_block              = cidrsubnet(var.vpc_cidr,8,count.index + 1)
+  map_public_ip_on_launch = true
 
   tags        = merge(local.myTags, {Name = "${var.environment}_public-sn_${count.index + 1}"}) 
 
@@ -158,6 +159,14 @@ resource "aws_security_group" "allow_traffic" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow ICMP (ping)"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "ICMP"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

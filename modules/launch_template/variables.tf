@@ -7,6 +7,10 @@ variable "environment" {
 
 variable "ami_id" {
     description = "value of the AMI to use in launch template"
+    validation {
+        condition     = length(var.ami_id) > 4 && substr(var.ami_id, 0, 4) == "ami-"
+        error_message = "The image_id value must be a valid AMI id, starting with \"ami-\"."
+    }
 }
 
 variable "instance_type" {

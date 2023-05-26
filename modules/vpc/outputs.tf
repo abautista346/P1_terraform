@@ -12,4 +12,10 @@ output "id_sg_allow" {
     description =   "ID of my Securuty Group to allow all"
 }
 
+//all private subnets
+output "private_subnets" {
+    value       = aws_subnet.sn_private.*.id
+    description = "Returns PRIVATE SUBNATES "
+}
+
 

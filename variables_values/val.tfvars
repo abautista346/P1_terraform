@@ -11,11 +11,11 @@ vpc_values = {
 
 
 launch_template_values = {
-  ami_id        = "ami-04e914639d0cca79a"
+  ami_id        = "ami-0ab193018f3e9351b"
   instance_type = "t2.micro"
-  name_device   = "/dev/sda1"
+  name_device   = "/dev/sdf"
   ebs_size      = 8
   bool_encript  = true
   key_pair      = "abautista_ssh_key"
-  
+
 }

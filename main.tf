@@ -42,5 +42,16 @@ module "role_definition" {
     myTags          =   local.myTags
 }
 
+module "auto_scaling" {
+    source                  =   "./modules/auto_scaling_group"
+
+    environment     =   var.vpc_values["environment"]
+    myTags          =   local.myTags
+    private_subnets =   module.vpc.private_subnets
+    id_launch_temp  =   module.launch_template.id_launch_temp
+
+    depends_on      = [module.launch_template]
+}
+
 ### command to use variables file 
 # terraform apply -var-file="variables_values/val.tfvars"
