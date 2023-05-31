@@ -30,5 +30,15 @@ variable "vps_val" {
 
 //to launch_template MODULE
 variable "launch_template_values" {
-    description =   "values to set configuration in Launch Template"
+    description =   "values to set configuration in Launch Template module"
+}
+
+//to auto_scaling MODULE
+variable "auto_sacaling_values" {
+    description =   "values to set configuration in Auto Scaling Group module"
+}
+
+//to load_balancer MODULE
+variable "load_balancer_values" {
+    description =   "values to set configuration in load valancer module"
 }

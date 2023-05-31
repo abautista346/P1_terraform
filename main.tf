@@ -45,13 +45,32 @@ module "role_definition" {
 module "auto_scaling" {
     source                  =   "./modules/auto_scaling_group"
 
-    environment     =   var.vpc_values["environment"]
-    myTags          =   local.myTags
-    private_subnets =   module.vpc.private_subnets
-    id_launch_temp  =   module.launch_template.id_launch_temp
+    environment         =   var.vpc_values["environment"]
+    myTags              =   local.myTags
+    private_subnets     =   module.vpc.private_subnets
+    id_launch_temp      =   module.launch_template.id_launch_temp
+    desired_capacity    =   var.auto_sacaling_values["desired_capacity"]
+    max_size            =   var.auto_sacaling_values["max_size"]
+    min_size            =   var.auto_sacaling_values["min_size"]
+    target_lb           =   module.load_balancer.target_lb
 
     depends_on      = [module.launch_template]
 }
 
+module "load_balancer" {
+    source              =   "./modules/load_balancer"
+
+    environment         =   var.vpc_values["environment"]
+    myTags              =   local.myTags
+    load_balancer_type  =   var.load_balancer_values["load_balancer_type"]
+    id_loadbalancer_sg  =   module.vpc.id_loadbalancer_sg
+    public_subnets      =   module.vpc.public_subnets
+    vpc_id              =   module.vpc.vpc_id
+
+}
+
 ### command to use variables file 
 # terraform apply -var-file="variables_values/val.tfvars"
+
+### command to destroy an specific module
+#   terraform destroy -target module.auto_scaling -var-file="variables_values/val.tfvars"

@@ -32,6 +32,7 @@ resource "aws_subnet" "sn_public" {
   vpc_id                  = aws_vpc.abautista_vpc.id
   cidr_block              = cidrsubnet(var.vpc_cidr,8,count.index + 1)
   map_public_ip_on_launch = true
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags        = merge(local.myTags, {Name = "${var.environment}_public-sn_${count.index + 1}"}) 
 
@@ -133,8 +134,10 @@ resource "aws_route_table_association" "rt_private_link" {
 
 
 ###### SECURITY GROUPS##########
+
+//Security Group to EC2 instances
 resource "aws_security_group" "allow_traffic" {
-  name        = "${var.environment}-tf-SG"
+  name        = "${var.environment}-instances-SG"
   description = "Allow all inbound traffic"
   vpc_id      = aws_vpc.abautista_vpc.id
 
@@ -160,6 +163,7 @@ resource "aws_security_group" "allow_traffic" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    #security_groups = [aws_security_group.lb_securityG.id]
   }
 
   ingress {
@@ -177,5 +181,46 @@ resource "aws_security_group" "allow_traffic" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.myTags, {Name = "${var.environment}-tf-SG"})
+  tags = merge(local.myTags, {Name = "${var.environment}-instances-SG"})
+}
+
+
+//Security Group to Load Balancer
+resource "aws_security_group" "lb_securityG" {
+  name        = "${var.environment}-lb-SG"
+  description = "Security Group to use in Load Balancer"
+  vpc_id      = aws_vpc.abautista_vpc.id
+
+  ingress {
+    description = "Allow HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow ICMP (ping)"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "ICMP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(local.myTags, {Name = "${var.environment}-lb-SG"})
 }
