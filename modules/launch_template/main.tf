@@ -2,20 +2,22 @@
 
 // Local varable
 locals {
-  
+
   myTags = {
-    Owner   =   "abautista"
-    Env     =   "p1"
+    Owner = "abautista"
+    Env   = "p1"
   }
 
 }
 
 resource "aws_launch_template" "launch_temp" {
-  name                      =   "${var.environment}_Launch_Template"
-  image_id                  =   var.ami_id
-  instance_type             =   var.instance_type
-  key_name                  =   var.key_pair
-  update_default_version    =   true
+  name          = "${var.environment}_Launch_Template"
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+  key_name      = aws_key_pair.my_keypair.key_name
+
+  //key_name               = var.key_pair
+  update_default_version = true
 
   block_device_mappings {
     device_name = var.name_device
@@ -38,8 +40,36 @@ resource "aws_launch_template" "launch_temp" {
   }
 
   user_data = filebase64("${path.module}/init.sh")
+  # Saving Key Pair for ssh login for Client if needed
 
-  tags        = local.myTags 
+  tags = local.myTags
+
+  depends_on = [aws_key_pair.my_keypair]
 }
 
+/*
+resource "null_resource" "name" {
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.my_key.private_key_pem
+    host        = "35.92.38.113"
+    timeout     = "20s"
+  }
 
+  provisioner "local-exec" {
+    command = "sudo echo  ${tls_private_key.my_key.private_key_pem} > mykey.pem"
+  }
+}
+*/
+
+// Generate new private key
+resource "tls_private_key" "my_key" {
+  algorithm = "RSA"
+}
+
+# Generate a key-pair with above key
+resource "aws_key_pair" "my_keypair" {
+  key_name   = "${var.environment}-keypair"
+  public_key = tls_private_key.my_key.public_key_openssh
+}
