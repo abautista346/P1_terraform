@@ -39,12 +39,28 @@ resource "aws_launch_template" "launch_temp" {
     security_groups             = [var.sg_allow]
   }
 
-  user_data = filebase64("${path.module}/init.sh")
-  # Saving Key Pair for ssh login for Client if needed
+  //user_data = data.template_file.script.rendered
+
+  user_data = base64encode(data.template_file.script.rendered)
 
   tags = local.myTags
 
-  depends_on = [aws_key_pair.my_keypair]
+  depends_on = [aws_key_pair.my_keypair, data.template_file.script]
+}
+
+
+// resource to send vars to init.sh
+data "template_file" "script" {
+  template = file("${path.module}/init.sh")
+  vars = {
+    efs_id_value = "${var.efs_id}"
+    key_pair     = "${tls_private_key.my_key.private_key_pem}"
+  }
+}
+
+
+output "script" {
+  value = data.template_file.script.rendered
 }
 
 /*

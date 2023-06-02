@@ -19,8 +19,9 @@ data "aws_availability_zones" "available" {
 
 //CREATING VPC
 resource "aws_vpc" "abautista_vpc" {
-  cidr_block = var.vpc_cidr
-  tags       = merge(local.myTags, { Name = "vpc_${var.environment}" })
+  cidr_block           = var.vpc_cidr
+  enable_dns_hostnames = true
+  tags                 = merge(local.myTags, { Name = "vpc_${var.environment}" })
 }
 
 ###to concat values

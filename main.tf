@@ -33,6 +33,9 @@ module "launch_template" {
   key_pair        = var.launch_template_values["key_pair"]
   arn_iam_profile = module.role_definition.arn_iam_profile
   sg_allow        = module.vpc.id_sg_allow
+  efs_id          = module.efs.efs_id
+
+  depends_on = [module.efs]
 }
 
 module "role_definition" {
@@ -67,6 +70,7 @@ module "load_balancer" {
   public_subnets     = module.vpc.public_subnets
   vpc_id             = module.vpc.vpc_id
 
+
 }
 
 module "efs" {
@@ -76,9 +80,18 @@ module "efs" {
   myTags          = local.myTags
   private_subnets = module.vpc.private_subnets
   id_sg_allow     = module.vpc.id_sg_allow
-  my_key          = module.launch_template.my_key
+  //my_key          = module.launch_template.my_key
 }
 
+output "output_values" {
+  value = module.efs.efs_id
+}
+
+/*
+output "output_script" {
+  value = module.launch_template.script
+}
+*/
 ### command to use variables file 
 # terraform apply -var-file="variables_values/val.tfvars"
 

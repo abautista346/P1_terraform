@@ -14,6 +14,8 @@ variable "id_sg_allow" {
   description = "Security Group Instance's ID"
 }
 
+/*
 variable "my_key" {
   description = "KeyPair to use in all instances"
 }
+*/
