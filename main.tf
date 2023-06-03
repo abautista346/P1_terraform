@@ -83,6 +83,15 @@ module "efs" {
   //my_key          = module.launch_template.my_key
 }
 
+
+module "route53" {
+  source = "./modules/route53"
+
+  environment  = var.vpc_values["environment"]
+  myTags       = local.myTags
+  loadbalancer = module.load_balancer.Loadbalancer
+}
+
 output "output_values" {
   value = module.efs.efs_id
 }

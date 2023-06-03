@@ -9,7 +9,7 @@ resource "aws_lb" "loadB" {
 
   enable_deletion_protection = true
 
-  tags              = var.myTags
+  tags = var.myTags
 }
 
 //Resource to connecting Load Balancer and Autoscaling group 

@@ -20,7 +20,6 @@ data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
 
-
     principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
@@ -33,15 +32,23 @@ data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
 
-
     principals {
       type        = "Service"
       identifiers = ["elasticfilesystem.amazonaws.com"]
     }
 
     actions = ["sts:AssumeRole"]
-
   }
 
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["route53.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
 
 }
